@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бриф для клиента</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-gradient: linear-gradient(130deg, #f8fbff 0%, #fff6fb 45%, #f2f7ff 100%);
+            --surface: rgba(255, 255, 255, 0.92);
+            --card-surface: rgba(255, 255, 255, 0.88);
+            --accent: #2563eb;
+            --accent-soft: rgba(37, 99, 235, 0.08);
+            --accent-secondary: #f97316;
+            --accent-tertiary: #22d3ee;
+            --text-main: #1e293b;
+            --text-muted: #4b5563;
+            --border-soft: rgba(148, 163, 184, 0.35);
+            --shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            padding: 70px 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            filter: blur(110px);
+            z-index: 0;
+            opacity: 0.65;
+        }
+
+        body::before {
+            top: -180px;
+            left: -160px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.45) 0%, transparent 65%);
+        }
+
+        body::after {
+            bottom: -200px;
+            right: -120px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.32) 0%, transparent 70%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: min(1120px, 100%);
+            background: var(--surface);
+            border-radius: 34px;
+            padding: 56px 64px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 42px;
+        }
+
+        .tag {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            padding: 8px 16px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+        }
+
+        header h1 {
+            font-size: clamp(32px, 4.3vw, 44px);
+            margin: 0;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #0f172a 0%, #2563eb 50%, #22d3ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .lead {
+            margin: 0;
+            max-width: 720px;
+            color: var(--text-muted);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .cards-grid {
+            display: grid;
+            gap: 26px;
+        }
+
+        section.card {
+            background: var(--card-surface);
+            border-radius: 26px;
+            border: 1px solid var(--border-soft);
+            padding: 32px 34px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        section.card::before {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 auto;
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(125deg, rgba(37, 99, 235, 0.14) 0%, rgba(34, 211, 238, 0.12) 60%, rgba(236, 72, 153, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        section.card::after {
+            content: "";
+            position: absolute;
+            inset: -40% auto auto 60%;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        section.card:hover::before,
+        section.card:hover::after {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            font-size: 22px;
+            background: linear-gradient(130deg, rgba(37, 99, 235, 0.15) 0%, rgba(236, 72, 153, 0.18) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        section.card h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        section.card p.description {
+            margin: 0 0 22px;
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.65;
+        }
+
+        .free-text {
+            width: 100%;
+            min-height: 120px;
+            padding: 18px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            background: rgba(246, 249, 255, 0.92);
+            color: var(--text-main);
+            font-size: 16px;
+            line-height: 1.65;
+            resize: vertical;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .free-text:focus,
+        .inline-input:focus {
+            outline: none;
+            border-color: rgba(37, 99, 235, 0.55);
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.15);
+        }
+
+        .options {
+            display: grid;
+            gap: 14px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 22px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            background: rgba(248, 250, 252, 0.9);
+            transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .option::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(34, 211, 238, 0.08) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .option:hover {
+            border-color: rgba(37, 99, 235, 0.55);
+            box-shadow: 0 14px 30px rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .option:hover::after {
+            opacity: 1;
+        }
+
+        .option.is-checked {
+            border-color: rgba(37, 99, 235, 0.8);
+            background: rgba(219, 234, 254, 0.8);
+            box-shadow: 0 18px 36px rgba(59, 130, 246, 0.18);
+        }
+
+        .option input[type="checkbox"],
+        .option input[type="radio"] {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 7px;
+            border: 2px solid rgba(148, 163, 184, 0.55);
+            position: relative;
+            cursor: pointer;
+            transition: border 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .option input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        .option input[type="checkbox"]:checked,
+        .option input[type="radio"]:checked {
+            border-color: var(--accent);
+            background: var(--accent);
+            box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.2);
+        }
+
+        .option input[type="checkbox"]:checked::after,
+        .option input[type="radio"]:checked::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,%3Csvg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M3.5 8.5L6.5 11.5L12.5 5.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E') center/12px 12px no-repeat;
+        }
+
+        .option span.option-label {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        .inline-input {
+            margin-top: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            background: rgba(248, 250, 252, 0.92);
+            color: var(--text-main);
+            font-size: 16px;
+            width: 100%;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea::placeholder,
+        .inline-input::placeholder {
+            color: rgba(71, 85, 105, 0.65);
+        }
+
+        footer {
+            margin-top: 42px;
+            padding: 28px 32px;
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: linear-gradient(120deg, rgba(221, 242, 255, 0.7) 0%, rgba(237, 233, 254, 0.7) 100%);
+            color: var(--text-main);
+            font-size: 16px;
+            line-height: 1.7;
+            box-shadow: 0 18px 38px rgba(148, 163, 184, 0.18);
+        }
+
+        @media (max-width: 900px) {
+            body {
+                padding: 46px 18px;
+            }
+
+            .container {
+                padding: 40px 28px;
+                border-radius: 28px;
+            }
+
+            section.card {
+                padding: 26px 24px;
+                border-radius: 24px;
+            }
+
+            .card-header {
+                align-items: flex-start;
+            }
+
+            .card-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            header h1 {
+                font-size: clamp(28px, 8vw, 36px);
+            }
+
+            .card-header {
+                flex-direction: row;
+            }
+
+            .option {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header>
+            <span class="tag">brief template</span>
+            <h1>Бриф на маркетинговое исследование</h1>
+            <p class="lead">Отправьте клиенту ссылку или сохраните PDF-версию. Отметьте релевантные варианты и заполните свободные поля — так мы быстрее синхронизируем ожидания по глубине, срокам и формату исследования.</p>
+        </header>
+
+        <div class="cards-grid">
+            <section class="card" id="project-overview">
+                <div class="card-header">
+                    <span class="card-icon">📝</span>
+                    <h2>1. Описание проекта</h2>
+                </div>
+                <p class="description">Свободное поле. Попросите описать продукт, текущую ситуацию и задачу, которую предстоит решить исследованием.</p>
+                <textarea class="free-text" placeholder="Например: онлайн-платформа для управления корпоративными знаниями. Нужно оценить емкость рынка, конкурентов и ключевые сегменты клиентов."></textarea>
+            </section>
+
+            <section class="card" id="project-stage">
+                <div class="card-header">
+                    <span class="card-icon">🚀</span>
+                    <h2>2. Текущая стадия проекта</h2>
+                </div>
+                <p class="description">Выберите один вариант, который точнее всего описывает состояние бизнеса или продукта.</p>
+                <div class="options" role="group" aria-labelledby="project-stage">
+                    <div class="option">
+                        <input type="radio" name="stage" id="stage-idea">
+                        <span class="option-label">Идея или MVP</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="stage" id="stage-pmf">
+                        <span class="option-label">Предзапуск / ищем product-market fit</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="stage" id="stage-live">
+                        <span class="option-label">Действующий бизнес внутри текущего рынка</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="stage" id="stage-newmarket">
+                        <span class="option-label">Выход или масштабирование на новый рынок</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="stage" id="stage-other">
+                        <span class="option-label">Другое</span>
+                    </div>
+                    <input class="inline-input" type="text" placeholder="Если выбрано 'Другое', опишите текущую ситуацию">
+                </div>
+            </section>
+
+            <section class="card" id="expected-outcome">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
+                    <h2>3. Что нужно получить от исследования</h2>
+                </div>
+                <p class="description">Отметьте все подходящие варианты, чтобы зафиксировать желаемый результат и формат выдачи.</p>
+                <div class="options" role="group" aria-labelledby="expected-outcome">
+                    <div class="option">
+                        <input type="checkbox" id="outcome-express">
+                        <span class="option-label">Экспресс-проверка гипотезы (TAM/SAM/SOM, топ-конкуренты)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="outcome-market">
+                        <span class="option-label">Полный анализ рынка и конкурентного поля</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="outcome-ca">
+                        <span class="option-label">Глубокий портрет целевой аудитории и инсайты поведения</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="outcome-finance">
+                        <span class="option-label">Финансовая модель и прогнозы (юнит-экономика, NPV, IRR)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="outcome-strategy">
+                        <span class="option-label">Стратегические рекомендации и сценарии роста</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="outcome-other">
+                        <span class="option-label">Другое</span>
+                    </div>
+                    <input class="inline-input" type="text" placeholder="Если есть дополнительные ожидания, перечислите их здесь">
+                </div>
+            </section>
+
+            <section class="card" id="audience">
+                <div class="card-header">
+                    <span class="card-icon">👥</span>
+                    <h2>4. Для кого готовим результат</h2>
+                </div>
+                <p class="description">Целевая аудитория отчёта влияет на глубину анализа, формат и визуализацию.</p>
+                <div class="options" role="group" aria-labelledby="audience">
+                    <div class="option">
+                        <input type="checkbox" id="audience-investors">
+                        <span class="option-label">Инвесторы или венчурные фонды</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="audience-board">
+                        <span class="option-label">Руководство / совет директоров</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="audience-partners">
+                        <span class="option-label">Потенциальные партнёры или клиенты</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="audience-team">
+                        <span class="option-label">Внутренняя команда (маркетинг, продажи, продукт)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="audience-state">
+                        <span class="option-label">Госструктуры / грантовые программы</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="audience-other">
+                        <span class="option-label">Другое</span>
+                    </div>
+                    <input class="inline-input" type="text" placeholder="Если нужен особый формат для конкретной аудитории, опишите его">
+                </div>
+            </section>
+
+            <section class="card" id="focus">
+                <div class="card-header">
+                    <span class="card-icon">🔍</span>
+                    <h2>5. Ключевые акценты в анализе</h2>
+                </div>
+                <p class="description">Отметьте направления, по которым ожидается максимальная детализация.</p>
+                <div class="options" role="group" aria-labelledby="focus">
+                    <div class="option">
+                        <input type="checkbox" id="focus-market">
+                        <span class="option-label">Объём и динамика рынка (TAM/SAM/SOM, прогнозы)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="focus-competitors">
+                        <span class="option-label">Конкуренты и бенчмарки (цены, УТП, SWOT/PEST)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="focus-ca">
+                        <span class="option-label">ЦА: сегменты, Jobs-to-be-Done, CJM</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="focus-product">
+                        <span class="option-label">Продукт и упаковка (позиционирование, функциональность)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="focus-finance">
+                        <span class="option-label">Финансовая модель и юнит-экономика</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="focus-insights">
+                        <span class="option-label">Готовые инсайты и план действий</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="focus-other">
+                        <span class="option-label">Другое</span>
+                    </div>
+                    <input class="inline-input" type="text" placeholder="Добавьте специфические блоки исследования, если они необходимы">
+                </div>
+            </section>
+
+            <section class="card" id="geography">
+                <div class="card-header">
+                    <span class="card-icon">🌍</span>
+                    <h2>6. География исследования</h2>
+                </div>
+                <p class="description">Уточните приоритетные рынки и страны. Можно выбрать несколько регионов.</p>
+                <div class="options" role="group" aria-labelledby="geography">
+                    <div class="option">
+                        <input type="checkbox" id="geo-russia">
+                        <span class="option-label">Россия</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="geo-cis">
+                        <span class="option-label">СНГ</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="geo-europe">
+                        <span class="option-label">Европа</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="geo-usa">
+                        <span class="option-label">США и Северная Америка</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="geo-me">
+                        <span class="option-label">Ближний Восток (ОАЭ и др.)</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="geo-asia">
+                        <span class="option-label">Азия</span>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="geo-other">
+                        <span class="option-label">Другое / комбинированно</span>
+                    </div>
+                    <input class="inline-input" type="text" placeholder="Перечислите конкретные страны, регионы или отраслевые сегменты">
+                </div>
+            </section>
+
+            <section class="card" id="format">
+                <div class="card-header">
+                    <span class="card-icon">⏱️</span>
+                    <h2>7. Формат и сроки</h2>
+                </div>
+                <p class="description">Отметьте комфортный формат и дедлайн. При необходимости добавьте комментарий.</p>
+                <div class="options" role="group" aria-labelledby="format">
+                    <div class="option">
+                        <input type="radio" name="format" id="format-express">
+                        <span class="option-label">Экспресс: 24 часа, 10–15 стр. PDF (проверка гипотезы)</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="format" id="format-standard">
+                        <span class="option-label">Стандарт: 3 дня, 25–35 стр. + презентация</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="format" id="format-max">
+                        <span class="option-label">Максимум: 5–7 дней, 70+ стр. + финмодель и доп. материалы</span>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="format" id="format-custom">
+                        <span class="option-label">Индивидуальный формат (указать детали)</span>
+                    </div>
+                    <input class="inline-input" type="text" placeholder="Укажите дедлайн, этапы согласования или особые требования к структуре">
+                </div>
+            </section>
+
+            <section class="card" id="additional">
+                <div class="card-header">
+                    <span class="card-icon">➕</span>
+                    <h2>Дополнительная информация</h2>
+                </div>
+                <p class="description">Инструменты для связи, ссылки на референсы, ожидания по бюджету, требования к NDA — всё, что поможет стартовать быстрее.</p>
+                <textarea class="free-text" placeholder="Например: контакт менеджера, Telegram, ссылка на референсы, бюджетный коридор, формат файлов, юридические ограничения."></textarea>
+            </section>
+        </div>
+
+        <footer>
+            Отправляя заполненный бриф, клиент помогает ускорить оценку стоимости и сроков. Если удобнее обсудить детали голосом, добавьте номер телефона или ссылку на мессенджер — вернусь с предложением и уточняющими вопросами.
+        </footer>
+    </main>
+    <script>
+        function updateOptionState(input) {
+            const option = input.closest('.option');
+            if (!option) {
+                return;
+            }
+            if (input.type === 'radio' && input.name) {
+                document.querySelectorAll('input[type="radio"][name="' + input.name + '"]').forEach(function(radio) {
+                    const parent = radio.closest('.option');
+                    if (parent) {
+                        parent.classList.toggle('is-checked', radio.checked);
+                    }
+                });
+            } else {
+                option.classList.toggle('is-checked', input.checked);
+            }
+        }
+
+        document.querySelectorAll('.option').forEach(function(option) {
+            const input = option.querySelector('input');
+            if (!input) {
+                return;
+            }
+
+            option.addEventListener('click', function(event) {
+                if (event.target === input) {
+                    return;
+                }
+                if (input.type === 'radio') {
+                    input.checked = true;
+                } else {
+                    input.checked = !input.checked;
+                }
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+
+            input.addEventListener('change', function() {
+                updateOptionState(input);
+            });
+
+            updateOptionState(input);
+        });
+    </script>
+</body>
+</html>
