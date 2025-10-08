@@ -377,6 +377,95 @@
             color: rgba(71, 85, 105, 0.65);
         }
 
+        /* Модальное окно политики конфиденциальности */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 32px;
+            font-weight: 300;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-main);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--text-main);
+            font-size: 28px;
+        }
+
+        .modal-content h3 {
+            color: var(--text-main);
+            font-size: 20px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .modal-content p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .modal-content ul {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .modal-content a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent);
+        }
+
         .submit-container {
             margin-top: 36px;
             display: flex;
@@ -754,7 +843,7 @@
             <div style="margin-bottom: 24px; text-align: center; max-width: 650px; margin-left: auto; margin-right: auto;">
                 <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 14px; color: var(--text-muted); line-height: 1.6;">
                     <input type="checkbox" id="gdpr-consent" style="margin-top: 4px; flex-shrink: 0; width: 18px; height: 18px; cursor: pointer;">
-                    <span>Нажимая кнопку "Отправить бриф", я даю согласие на обработку персональных данных в соответствии с <a href="#" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent);">Политикой конфиденциальности</a> и соглашаюсь с условиями передачи информации.</span>
+                    <span>Нажимая кнопку "Отправить бриф", я даю согласие на обработку персональных данных в соответствии с <a href="#" id="privacy-link" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent);">Политикой конфиденциальности</a> и соглашаюсь с условиями передачи информации.</span>
                 </label>
             </div>
             <button type="button" class="submit-btn" id="submitBtn">Отправить бриф</button>
@@ -766,27 +855,144 @@
         </footer>
 
     </main>
+
+    <!-- Модальное окно политики конфиденциальности -->
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Политика конфиденциальности</h2>
+
+            <p><strong>Дата вступления в силу:</strong> 08.10.2025</p>
+
+            <h3>1. Общие положения</h3>
+            <p>Настоящая Политика конфиденциальности определяет порядок обработки и защиты персональных данных пользователей, предоставленных при заполнении брифа на маркетинговое исследование.</p>
+            <p>Оператором персональных данных является Индивидуальный предприниматель/Организация, осуществляющая деятельность в соответствии с законодательством Российской Федерации.</p>
+
+            <h3>2. Какие данные мы собираем</h3>
+            <p>При заполнении брифа мы собираем следующую информацию:</p>
+            <ul>
+                <li>ФИО (полностью)</li>
+                <li>Название компании</li>
+                <li>Номер телефона</li>
+                <li>Адрес электронной почты (по желанию)</li>
+                <li>Информацию о вашем проекте и требованиях к исследованию</li>
+            </ul>
+
+            <h3>3. Цели обработки персональных данных</h3>
+            <p>Ваши персональные данные используются исключительно в следующих целях:</p>
+            <ul>
+                <li>Связь с вами для уточнения деталей проекта</li>
+                <li>Подготовка коммерческого предложения</li>
+                <li>Выполнение договорных обязательств при заключении договора</li>
+                <li>Информирование о готовности исследования</li>
+            </ul>
+
+            <h3>4. Правовые основания обработки</h3>
+            <p>Обработка персональных данных осуществляется на основании:</p>
+            <ul>
+                <li>Федерального закона от 27.07.2006 № 152-ФЗ "О персональных данных"</li>
+                <li>Вашего явного согласия на обработку персональных данных</li>
+                <li>Необходимости исполнения договора, стороной которого вы являетесь</li>
+            </ul>
+
+            <h3>5. Срок хранения данных</h3>
+            <p>Ваши персональные данные хранятся в течение:</p>
+            <ul>
+                <li>3 года с момента последнего взаимодействия</li>
+                <li>До момента отзыва согласия на обработку</li>
+                <li>До достижения целей обработки</li>
+            </ul>
+
+            <h3>6. Меры защиты</h3>
+            <p>Мы применяем следующие меры для защиты ваших данных:</p>
+            <ul>
+                <li>Шифрование данных при передаче (SSL/TLS)</li>
+                <li>Ограниченный доступ к персональным данным</li>
+                <li>Регулярное резервное копирование</li>
+                <li>Использование защищенных серверов</li>
+            </ul>
+
+            <h3>7. Передача данных третьим лицам</h3>
+            <p>Мы не передаем ваши персональные данные третьим лицам, за исключением случаев:</p>
+            <ul>
+                <li>Требования законодательства РФ</li>
+                <li>Вашего прямого согласия</li>
+                <li>Передачи техническим подрядчикам (с обязательствами конфиденциальности)</li>
+            </ul>
+
+            <h3>8. Ваши права</h3>
+            <p>В соответствии с ФЗ-152 вы имеете право:</p>
+            <ul>
+                <li>Получать информацию о обработке ваших данных</li>
+                <li>Требовать уточнения, блокирования или удаления данных</li>
+                <li>Отозвать согласие на обработку в любой момент</li>
+                <li>Обжаловать действия оператора в Роскомнадзоре или суде</li>
+            </ul>
+
+            <h3>9. Использование cookie</h3>
+            <p>Наш сайт использует технические cookie для обеспечения функционирования формы. Мы не используем аналитические или рекламные cookie.</p>
+
+            <h3>10. Контактная информация</h3>
+            <p>По вопросам обработки персональных данных вы можете обратиться:</p>
+            <ul>
+                <li><strong>Email:</strong> 5398001@gmail.com</li>
+                <li><strong>Телефон:</strong> +7 (999) 453-19-85</li>
+                <li><strong>Telegram:</strong> @AlekseySpinov</li>
+            </ul>
+
+            <h3>11. Изменения в политике</h3>
+            <p>Мы оставляем за собой право вносить изменения в настоящую Политику конфиденциальности. Актуальная версия всегда доступна по ссылке на сайте.</p>
+
+            <p style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(148, 163, 184, 0.2);"><strong>Используя наш сервис, вы подтверждаете, что прочитали и согласны с условиями настоящей Политики конфиденциальности.</strong></p>
+        </div>
+    </div>
     <script>
+        // Модальное окно политики конфиденциальности
+        const privacyModal = document.getElementById('privacy-modal');
+        const privacyLink = document.getElementById('privacy-link');
+        const modalClose = document.querySelector('.modal-close');
+
+        // Открытие модального окна
+        privacyLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            privacyModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Закрытие по клику на крестик
+        modalClose.addEventListener('click', function() {
+            privacyModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Закрытие по клику вне модального окна
+        privacyModal.addEventListener('click', function(e) {
+            if (e.target === privacyModal) {
+                privacyModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
         // Защита от копирования текста
         document.addEventListener('contextmenu', function(e) {
-            // Разрешаем контекстное меню только для полей ввода
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            // Разрешаем контекстное меню для полей ввода и модального окна
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.closest('.modal-content')) {
                 e.preventDefault();
                 return false;
             }
         });
 
         document.addEventListener('copy', function(e) {
-            // Разрешаем копирование только для полей ввода
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            // Разрешаем копирование для полей ввода и модального окна
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.closest('.modal-content')) {
                 e.preventDefault();
                 return false;
             }
         });
 
         document.addEventListener('selectstart', function(e) {
-            // Разрешаем выделение только для полей ввода
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            // Разрешаем выделение для полей ввода и модального окна
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.closest('.modal-content')) {
                 e.preventDefault();
                 return false;
             }
@@ -794,9 +1000,16 @@
 
         // Блокировка горячих клавиш Ctrl+C, Ctrl+A и др.
         document.addEventListener('keydown', function(e) {
+            // Закрытие модального окна по Escape
+            if (e.key === 'Escape' && privacyModal.classList.contains('active')) {
+                privacyModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                return;
+            }
+
             if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'a' || e.key === 'x' || e.key === 'u' || e.key === 's')) {
-                // Разрешаем только для полей ввода
-                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                // Разрешаем для полей ввода и модального окна
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.closest('.modal-content')) {
                     e.preventDefault();
                     return false;
                 }
