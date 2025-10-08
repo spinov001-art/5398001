@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бриф для клиента</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
@@ -306,12 +307,82 @@
             color: var(--text-main);
             font-size: 16px;
             width: 100%;
-            transition: border 0.3s ease, box-shadow 0.3s ease;
+            transition: border 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, max-height 0.3s ease;
+            display: none;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .inline-input.visible {
+            display: block;
+            opacity: 1;
+            max-height: 200px;
         }
 
         textarea::placeholder,
         .inline-input::placeholder {
             color: rgba(71, 85, 105, 0.65);
+        }
+
+        .submit-container {
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 18px 48px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 38px rgba(37, 99, 235, 0.45);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            padding: 16px 24px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            display: block;
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: block;
         }
 
         footer {
@@ -602,11 +673,22 @@
             </section>
         </div>
 
+        <div class="submit-container">
+            <button type="button" class="submit-btn" id="submitBtn">Отправить бриф</button>
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+
         <footer>
             Отправляя заполненный бриф, клиент помогает ускорить оценку стоимости и сроков. Если удобнее обсудить детали голосом, добавьте номер телефона или ссылку на мессенджер — вернусь с предложением и уточняющими вопросами.
         </footer>
     </main>
     <script>
+        // Инициализация EmailJS
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY"); // Замените на ваш Public Key из EmailJS
+        })();
+
+        // Функция обновления состояния опций
         function updateOptionState(input) {
             const option = input.closest('.option');
             if (!option) {
@@ -624,6 +706,40 @@
             }
         }
 
+        // Функция показа/скрытия полей "Другое"
+        function toggleOtherInput(input) {
+            const container = input.closest('.options');
+            if (!container) return;
+
+            const otherInput = container.querySelector('.inline-input');
+            if (!otherInput) return;
+
+            // Проверяем, является ли это опция "Другое"
+            const label = input.parentElement.querySelector('.option-label');
+            if (!label) return;
+
+            const isOther = label.textContent.includes('Другое') || label.textContent.includes('Индивидуальный');
+
+            if (input.type === 'radio') {
+                // Для radio - показываем только если выбран "Другое"
+                if (isOther && input.checked) {
+                    otherInput.classList.add('visible');
+                } else if (isOther) {
+                    otherInput.classList.remove('visible');
+                }
+            } else if (input.type === 'checkbox') {
+                // Для checkbox - показываем если "Другое" отмечен
+                if (isOther) {
+                    if (input.checked) {
+                        otherInput.classList.add('visible');
+                    } else {
+                        otherInput.classList.remove('visible');
+                    }
+                }
+            }
+        }
+
+        // Инициализация всех опций
         document.querySelectorAll('.option').forEach(function(option) {
             const input = option.querySelector('input');
             if (!input) {
@@ -631,7 +747,8 @@
             }
 
             option.addEventListener('click', function(event) {
-                if (event.target === input) {
+                // Не обрабатываем клик, если кликнули по самому input или по inline-input
+                if (event.target === input || event.target.classList.contains('inline-input')) {
                     return;
                 }
                 if (input.type === 'radio') {
@@ -644,9 +761,172 @@
 
             input.addEventListener('change', function() {
                 updateOptionState(input);
+                toggleOtherInput(input);
             });
 
             updateOptionState(input);
+        });
+
+        // Функция сбора данных из формы
+        function collectBriefData() {
+            const data = {
+                project_description: document.querySelector('#project-overview textarea').value,
+                project_stage: '',
+                project_stage_other: '',
+                expected_outcomes: [],
+                expected_outcomes_other: '',
+                audience: [],
+                audience_other: '',
+                focus_areas: [],
+                focus_areas_other: '',
+                geography: [],
+                geography_other: '',
+                format: '',
+                format_other: '',
+                additional_info: document.querySelector('#additional textarea').value
+            };
+
+            // Стадия проекта
+            const stageRadio = document.querySelector('input[name="stage"]:checked');
+            if (stageRadio) {
+                const stageLabel = stageRadio.parentElement.querySelector('.option-label').textContent;
+                data.project_stage = stageLabel;
+                if (stageLabel.includes('Другое')) {
+                    data.project_stage_other = document.querySelector('#project-stage .inline-input').value;
+                }
+            }
+
+            // Ожидаемые результаты
+            document.querySelectorAll('#expected-outcome input[type="checkbox"]:checked').forEach(function(cb) {
+                const label = cb.parentElement.querySelector('.option-label').textContent;
+                data.expected_outcomes.push(label);
+            });
+            data.expected_outcomes_other = document.querySelector('#expected-outcome .inline-input').value;
+
+            // Аудитория
+            document.querySelectorAll('#audience input[type="checkbox"]:checked').forEach(function(cb) {
+                const label = cb.parentElement.querySelector('.option-label').textContent;
+                data.audience.push(label);
+            });
+            data.audience_other = document.querySelector('#audience .inline-input').value;
+
+            // Акценты
+            document.querySelectorAll('#focus input[type="checkbox"]:checked').forEach(function(cb) {
+                const label = cb.parentElement.querySelector('.option-label').textContent;
+                data.focus_areas.push(label);
+            });
+            data.focus_areas_other = document.querySelector('#focus .inline-input').value;
+
+            // География
+            document.querySelectorAll('#geography input[type="checkbox"]:checked').forEach(function(cb) {
+                const label = cb.parentElement.querySelector('.option-label').textContent;
+                data.geography.push(label);
+            });
+            data.geography_other = document.querySelector('#geography .inline-input').value;
+
+            // Формат
+            const formatRadio = document.querySelector('input[name="format"]:checked');
+            if (formatRadio) {
+                const formatLabel = formatRadio.parentElement.querySelector('.option-label').textContent;
+                data.format = formatLabel;
+                if (formatLabel.includes('Индивидуальный')) {
+                    data.format_other = document.querySelector('#format .inline-input').value;
+                }
+            }
+
+            return data;
+        }
+
+        // Функция форматирования данных для email
+        function formatEmailBody(data) {
+            let body = '=== БРИФ НА МАРКЕТИНГОВОЕ ИССЛЕДОВАНИЕ ===\n\n';
+
+            body += '1. ОПИСАНИЕ ПРОЕКТА:\n' + (data.project_description || 'Не указано') + '\n\n';
+
+            body += '2. ТЕКУЩАЯ СТАДИЯ ПРОЕКТА:\n' + (data.project_stage || 'Не указано');
+            if (data.project_stage_other) body += ' - ' + data.project_stage_other;
+            body += '\n\n';
+
+            body += '3. ОЖИДАЕМЫЕ РЕЗУЛЬТАТЫ:\n';
+            if (data.expected_outcomes.length > 0) {
+                data.expected_outcomes.forEach(item => body += '• ' + item + '\n');
+            }
+            if (data.expected_outcomes_other) body += 'Дополнительно: ' + data.expected_outcomes_other + '\n';
+            body += '\n';
+
+            body += '4. ЦЕЛЕВАЯ АУДИТОРИЯ ОТЧЁТА:\n';
+            if (data.audience.length > 0) {
+                data.audience.forEach(item => body += '• ' + item + '\n');
+            }
+            if (data.audience_other) body += 'Дополнительно: ' + data.audience_other + '\n';
+            body += '\n';
+
+            body += '5. КЛЮЧЕВЫЕ АКЦЕНТЫ В АНАЛИЗЕ:\n';
+            if (data.focus_areas.length > 0) {
+                data.focus_areas.forEach(item => body += '• ' + item + '\n');
+            }
+            if (data.focus_areas_other) body += 'Дополнительно: ' + data.focus_areas_other + '\n';
+            body += '\n';
+
+            body += '6. ГЕОГРАФИЯ ИССЛЕДОВАНИЯ:\n';
+            if (data.geography.length > 0) {
+                data.geography.forEach(item => body += '• ' + item + '\n');
+            }
+            if (data.geography_other) body += 'Дополнительно: ' + data.geography_other + '\n';
+            body += '\n';
+
+            body += '7. ФОРМАТ И СРОКИ:\n' + (data.format || 'Не указано');
+            if (data.format_other) body += ' - ' + data.format_other;
+            body += '\n\n';
+
+            body += '8. ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ:\n' + (data.additional_info || 'Не указано') + '\n';
+
+            return body;
+        }
+
+        // Обработчик отправки
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const btn = this;
+            const statusMsg = document.getElementById('statusMessage');
+
+            // Отключаем кнопку
+            btn.disabled = true;
+            btn.textContent = 'Отправка...';
+
+            // Убираем предыдущие сообщения
+            statusMsg.className = 'status-message';
+            statusMsg.textContent = '';
+
+            // Собираем данные
+            const briefData = collectBriefData();
+            const emailBody = formatEmailBody(briefData);
+
+            // Параметры для EmailJS
+            const templateParams = {
+                from_name: 'Бриф-форма с сайта',
+                message: emailBody,
+                to_email: 'your-email@example.com' // Замените на ваш email
+            };
+
+            // Отправка через EmailJS
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    statusMsg.className = 'status-message success';
+                    statusMsg.textContent = '✓ Бриф успешно отправлен! Мы свяжемся с вами в ближайшее время.';
+                    btn.textContent = 'Отправлено';
+
+                    // Сброс формы через 3 секунды
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    statusMsg.className = 'status-message error';
+                    statusMsg.textContent = '✗ Ошибка отправки. Попробуйте ещё раз или свяжитесь напрямую.';
+                    btn.disabled = false;
+                    btn.textContent = 'Отправить бриф';
+                });
         });
     </script>
 </body>
