@@ -37,6 +37,10 @@
             padding: 70px 24px;
             position: relative;
             overflow-x: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body::before,
@@ -139,6 +143,8 @@
             background: linear-gradient(125deg, rgba(37, 99, 235, 0.14) 0%, rgba(34, 211, 238, 0.12) 60%, rgba(236, 72, 153, 0.1) 100%);
             opacity: 0;
             transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 0;
         }
 
         section.card::after {
@@ -150,6 +156,8 @@
             background: radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 0;
         }
 
         section.card:hover::before,
@@ -162,6 +170,8 @@
             align-items: center;
             gap: 16px;
             margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
         }
 
         .card-icon {
@@ -190,6 +200,8 @@
             color: var(--text-muted);
             font-size: 16px;
             line-height: 1.65;
+            position: relative;
+            z-index: 1;
         }
 
         .free-text {
@@ -204,6 +216,12 @@
             line-height: 1.65;
             resize: vertical;
             transition: border 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 1;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
 
         .free-text:focus,
@@ -216,6 +234,8 @@
         .options {
             display: grid;
             gap: 14px;
+            position: relative;
+            z-index: 1;
         }
 
         .option {
@@ -312,12 +332,44 @@
             opacity: 0;
             max-height: 0;
             overflow: hidden;
+            position: relative;
+            z-index: 2;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
 
         .inline-input.visible {
             display: block;
             opacity: 1;
             max-height: 200px;
+        }
+
+        .contact-input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            background: rgba(246, 249, 255, 0.92);
+            color: var(--text-main);
+            font-size: 16px;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+            font-family: inherit;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .contact-input:focus {
+            outline: none;
+            border-color: rgba(37, 99, 235, 0.55);
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.15);
+        }
+
+        .contact-input::placeholder {
+            color: rgba(71, 85, 105, 0.65);
         }
 
         textarea::placeholder,
@@ -444,23 +496,48 @@
         <header>
             <span class="tag">brief template</span>
             <h1>Бриф на маркетинговое исследование</h1>
-            <p class="lead">Отправьте клиенту ссылку или сохраните PDF-версию. Отметьте релевантные варианты и заполните свободные поля — так мы быстрее синхронизируем ожидания по глубине, срокам и формату исследования.</p>
         </header>
 
         <div class="cards-grid">
+            <section class="card" id="client-info">
+                <div class="card-header">
+                    <span class="card-icon">👤</span>
+                    <h2>Контактная информация</h2>
+                </div>
+                <p class="description">Укажите ваши контактные данные, чтобы мы могли связаться с вами по результатам брифа.</p>
+                <div style="display: grid; gap: 18px; position: relative; z-index: 1;">
+                    <div>
+                        <label for="client-name" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); font-size: 15px;">ФИО <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="client-name" class="contact-input" placeholder="Иванов Иван Иванович" required>
+                    </div>
+                    <div>
+                        <label for="client-company" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); font-size: 15px;">Название компании <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="client-company" class="contact-input" placeholder="ООО 'Название компании'" required>
+                    </div>
+                    <div>
+                        <label for="client-phone" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); font-size: 15px;">Номер телефона <span style="color: #ef4444;">*</span></label>
+                        <input type="tel" id="client-phone" class="contact-input" placeholder="+7 (999) 123-45-67" required>
+                    </div>
+                    <div>
+                        <label for="client-email" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); font-size: 15px;">Email</label>
+                        <input type="email" id="client-email" class="contact-input" placeholder="example@company.ru">
+                    </div>
+                </div>
+            </section>
+
             <section class="card" id="project-overview">
                 <div class="card-header">
                     <span class="card-icon">📝</span>
-                    <h2>1. Описание проекта</h2>
+                    <h2>2. Описание проекта</h2>
                 </div>
-                <p class="description">Свободное поле. Попросите описать продукт, текущую ситуацию и задачу, которую предстоит решить исследованием.</p>
+                <p class="description">Опишите Ваш продукт/нишу, текущую ситуацию и задачу, которую предстоит решить исследованием.</p>
                 <textarea class="free-text" placeholder="Например: онлайн-платформа для управления корпоративными знаниями. Нужно оценить емкость рынка, конкурентов и ключевые сегменты клиентов."></textarea>
             </section>
 
             <section class="card" id="project-stage">
                 <div class="card-header">
                     <span class="card-icon">🚀</span>
-                    <h2>2. Текущая стадия проекта</h2>
+                    <h2>3. Текущая стадия проекта</h2>
                 </div>
                 <p class="description">Выберите один вариант, который точнее всего описывает состояние бизнеса или продукта.</p>
                 <div class="options" role="group" aria-labelledby="project-stage">
@@ -491,7 +568,7 @@
             <section class="card" id="expected-outcome">
                 <div class="card-header">
                     <span class="card-icon">🎯</span>
-                    <h2>3. Что нужно получить от исследования</h2>
+                    <h2>4. Что нужно получить от исследования</h2>
                 </div>
                 <p class="description">Отметьте все подходящие варианты, чтобы зафиксировать желаемый результат и формат выдачи.</p>
                 <div class="options" role="group" aria-labelledby="expected-outcome">
@@ -526,7 +603,7 @@
             <section class="card" id="audience">
                 <div class="card-header">
                     <span class="card-icon">👥</span>
-                    <h2>4. Для кого готовим результат</h2>
+                    <h2>5. Для кого готовим результат</h2>
                 </div>
                 <p class="description">Целевая аудитория отчёта влияет на глубину анализа, формат и визуализацию.</p>
                 <div class="options" role="group" aria-labelledby="audience">
@@ -561,7 +638,7 @@
             <section class="card" id="focus">
                 <div class="card-header">
                     <span class="card-icon">🔍</span>
-                    <h2>5. Ключевые акценты в анализе</h2>
+                    <h2>6. Ключевые акценты в анализе</h2>
                 </div>
                 <p class="description">Отметьте направления, по которым ожидается максимальная детализация.</p>
                 <div class="options" role="group" aria-labelledby="focus">
@@ -600,7 +677,7 @@
             <section class="card" id="geography">
                 <div class="card-header">
                     <span class="card-icon">🌍</span>
-                    <h2>6. География исследования</h2>
+                    <h2>7. География исследования</h2>
                 </div>
                 <p class="description">Уточните приоритетные рынки и страны. Можно выбрать несколько регионов.</p>
                 <div class="options" role="group" aria-labelledby="geography">
@@ -639,7 +716,7 @@
             <section class="card" id="format">
                 <div class="card-header">
                     <span class="card-icon">⏱️</span>
-                    <h2>7. Формат и сроки</h2>
+                    <h2>8. Формат и сроки</h2>
                 </div>
                 <p class="description">Отметьте комфортный формат и дедлайн. При необходимости добавьте комментарий.</p>
                 <div class="options" role="group" aria-labelledby="format">
@@ -674,18 +751,67 @@
         </div>
 
         <div class="submit-container">
+            <div style="margin-bottom: 24px; text-align: center; max-width: 650px; margin-left: auto; margin-right: auto;">
+                <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+                    <input type="checkbox" id="gdpr-consent" style="margin-top: 4px; flex-shrink: 0; width: 18px; height: 18px; cursor: pointer;">
+                    <span>Нажимая кнопку "Отправить бриф", я даю согласие на обработку персональных данных в соответствии с <a href="#" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent);">Политикой конфиденциальности</a> и соглашаюсь с условиями передачи информации.</span>
+                </label>
+            </div>
             <button type="button" class="submit-btn" id="submitBtn">Отправить бриф</button>
             <div class="status-message" id="statusMessage"></div>
         </div>
 
-        <footer>
-            Отправляя заполненный бриф, клиент помогает ускорить оценку стоимости и сроков. Если удобнее обсудить детали голосом, добавьте номер телефона или ссылку на мессенджер — вернусь с предложением и уточняющими вопросами.
+        <footer style="margin-top: 42px; padding: 20px 28px; border-radius: 20px; background: rgba(248, 250, 252, 0.7); border: 1px solid rgba(148, 163, 184, 0.18); font-size: 13px; color: var(--text-muted); text-align: center; line-height: 1.65;">
+            © 2025. Все персональные данные обрабатываются в соответствии с требованиями ФЗ-152 "О персональных данных". Информация используется исключительно для связи с вами и подготовки коммерческого предложения.
         </footer>
+
     </main>
     <script>
+        // Защита от копирования текста
+        document.addEventListener('contextmenu', function(e) {
+            // Разрешаем контекстное меню только для полей ввода
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        document.addEventListener('copy', function(e) {
+            // Разрешаем копирование только для полей ввода
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        document.addEventListener('selectstart', function(e) {
+            // Разрешаем выделение только для полей ввода
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Блокировка горячих клавиш Ctrl+C, Ctrl+A и др.
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'a' || e.key === 'x' || e.key === 'u' || e.key === 's')) {
+                // Разрешаем только для полей ввода
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            // Блокировка F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.key === 'F12' ||
+                ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
         // Инициализация EmailJS
         (function() {
-            emailjs.init("YdzUmJkKUgRcBE018"); // 
+            emailjs.init("YdzUmJkKUgRcBE018");
         })();
 
         // Функция обновления состояния опций
@@ -770,6 +896,10 @@
         // Функция сбора данных из формы
         function collectBriefData() {
             const data = {
+                client_name: document.getElementById('client-name').value,
+                client_company: document.getElementById('client-company').value,
+                client_phone: document.getElementById('client-phone').value,
+                client_email: document.getElementById('client-email').value,
                 project_description: document.querySelector('#project-overview textarea').value,
                 project_stage: '',
                 project_stage_other: '',
@@ -841,6 +971,14 @@
         function formatEmailBody(data) {
             let body = '=== БРИФ НА МАРКЕТИНГОВОЕ ИССЛЕДОВАНИЕ ===\n\n';
 
+            body += '=== КОНТАКТНАЯ ИНФОРМАЦИЯ КЛИЕНТА ===\n';
+            body += 'ФИО: ' + (data.client_name || 'Не указано') + '\n';
+            body += 'Компания: ' + (data.client_company || 'Не указано') + '\n';
+            body += 'Телефон: ' + (data.client_phone || 'Не указано') + '\n';
+            body += 'Email: ' + (data.client_email || 'Не указано') + '\n\n';
+
+            body += '=== ИНФОРМАЦИЯ О ПРОЕКТЕ ===\n\n';
+
             body += '1. ОПИСАНИЕ ПРОЕКТА:\n' + (data.project_description || 'Не указано') + '\n\n';
 
             body += '2. ТЕКУЩАЯ СТАДИЯ ПРОЕКТА:\n' + (data.project_stage || 'Не указано');
@@ -888,6 +1026,40 @@
         document.getElementById('submitBtn').addEventListener('click', function() {
             const btn = this;
             const statusMsg = document.getElementById('statusMessage');
+
+            // Проверка обязательных полей
+            const clientName = document.getElementById('client-name');
+            const clientCompany = document.getElementById('client-company');
+            const clientPhone = document.getElementById('client-phone');
+            const gdprConsent = document.getElementById('gdpr-consent');
+
+            if (!clientName.value.trim()) {
+                statusMsg.className = 'status-message error';
+                statusMsg.textContent = '✗ Пожалуйста, укажите ФИО';
+                clientName.focus();
+                return;
+            }
+
+            if (!clientCompany.value.trim()) {
+                statusMsg.className = 'status-message error';
+                statusMsg.textContent = '✗ Пожалуйста, укажите название компании';
+                clientCompany.focus();
+                return;
+            }
+
+            if (!clientPhone.value.trim()) {
+                statusMsg.className = 'status-message error';
+                statusMsg.textContent = '✗ Пожалуйста, укажите номер телефона';
+                clientPhone.focus();
+                return;
+            }
+
+            if (!gdprConsent.checked) {
+                statusMsg.className = 'status-message error';
+                statusMsg.textContent = '✗ Необходимо дать согласие на обработку персональных данных';
+                gdprConsent.focus();
+                return;
+            }
 
             // Отключаем кнопку
             btn.disabled = true;
